@@ -7,6 +7,6 @@ enum CarStatus
     STARTING = 1,
     BUZZING = 2,
     DRIVE = 3
-}
+};
 
 #endif // ENUMS_H

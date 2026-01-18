@@ -1,12 +1,13 @@
-#include "pinmap.h"
+#include <Arduino.h>
 #include <mcp2515.h>
+#include "pinMap.h"
 #include "enums.h"
 
 // pin setup
-const int INPUT_PIN_COUNT =;
-uint8_t pin_in[INPUT_PIN_COUNT] = {};
-const int OUTPUT_PIN_COUNT =;
-uint8_t pin_out[OUTPUT_PIN_COUNT] = {};
+const int INPUT_PIN_COUNT =2;
+uint8_t pin_in[INPUT_PIN_COUNT] = {START_BTN, BRAKE_IN};
+const int OUTPUT_PIN_COUNT =3;
+uint8_t pin_out[OUTPUT_PIN_COUNT] = {BRAKE_LIGHT, DRIVE_MODE_LED, BUZZER_OUT};
 
 // 
 
@@ -22,7 +23,7 @@ void loop()
     // if brake > threshold:
     //     brake light on
 
-    switch(car_status){
+    switch (car_status) {
         case INIT: {
             // set motor to 0
             // if start button down AND brakes depressed:
