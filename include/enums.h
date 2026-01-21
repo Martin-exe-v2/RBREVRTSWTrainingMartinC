@@ -3,6 +3,7 @@
 
 enum CarStatus
 {
+    PROBLEM = -1, // maximum minimal hamming distance to all other states
     INIT = 0,
     STARTING = 1,
     BUZZING = 2,

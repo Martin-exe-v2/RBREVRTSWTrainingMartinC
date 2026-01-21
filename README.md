@@ -12,19 +12,19 @@ switch:
     state == INIT
         motor = 0
         if start_button down and brakes > threshold:
-            timestamp = ms()
+            status_timestamp = ms()
             state = STARTING
     state == STARTING
         motor = 0
         if start_button down and brakes > threshold:
-            if ms()-timestamp > 2000 and CAN.readfiltered(0x186040F3).
-                timestamp = ms()
+            if ms()-status_timestamp > 2000 and CAN.readfiltered(0x186040F3).
+                status_timestamp = ms()
                 state = BUZZING
         else:
             state = INIT
     state == BUZZING
         buzzer = HIGH
-        if ms()-timestamp > 2000:
+        if ms()-status_timestamp > 2000:
             state = DRIVE
     state == DRIVE
         get pedal in
@@ -36,10 +36,12 @@ switch:
             elif ms() - time_fault > 100:
                 brick motor
                 state = INIT
-        else:
-            if fault:
-                fault = false
+        if fault:
+            fault = false
             torque = f(pedals)
+    default:
+        set state to undefined
+        brick motor
 
         
 

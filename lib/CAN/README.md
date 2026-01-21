@@ -1,13 +1,12 @@
 frames needed
 
-BMS:
+BMS: PB1
 status
 
-motor:
+motor: PB2
 torque
 
-debug:
-pedals (5V, 3V3)
+debug: PB0
+pedal values (5V, 3V3)
 car state
-fault status
-dapps
+fault status and dapps 
