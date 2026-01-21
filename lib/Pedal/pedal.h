@@ -9,7 +9,7 @@
 constexpr bool FLIP_MOTOR_DIR = false;
 // most reduced form of ratio between pedal voltages that has both values as a multiple of 10
 #define pedal1_ratio 50 // analog input 0-1023
-#define pedal2_ratio 33 // analog input 0-675
+#define pedal2_ratio 33 // analog input 0-680
 #define tolerance_threshold 3055 // numerically calculated, desmos graph used: https://www.desmos.com/calculator/alqb99rk5p
 // threshold chosen to eliminate any chance of faulty inputs being read as non faulty, based on manufacturer specifications
 uint16_t;
