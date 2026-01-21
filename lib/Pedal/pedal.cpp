@@ -23,6 +23,31 @@ bool detectFault(uint16_t pedal1, uint16_t pedal2) {
     return (pedal2_scaled - pedal1_scaled) <= tolerance_threshold;
 }
 
-int16_t torqueMap(uint16_t pedal, bool flip_dir) {
-    return 0;
+constexpr int16_t torqueMap(uint16_t pedal, bool flip_dir) {
+    int16_t torque_ = 0;
+    if (pedal <= torque_points[0].in) { // lower clamp
+        return 0;
+    }
+    if (pedal >= torque_points[TORQUE_POINT_COUNT-1].in) {// upper clamp
+        torque_ = torque_points[TORQUE_POINT_COUNT-1].out;
+    }
+    else for (int i = 1; i < TORQUE_POINT_COUNT; i++){ //loops through all possible non-trivial divisions
+        if (pedal <= torque_points[i].in) {
+            const point &pl = torque_points[i-1];
+            const point &ph = torque_points[i];
+            uint32_t Din = ph.in - pl.in;
+            uint32_t Dout = ph.out - pl.out;
+            torque_ = pl.out + ((uint32_t)(pedal - pl.in) * Dout) / Din;
+            break;
+        }
+    }
+    if (flip_dir) {
+        torque_ = -1 * torque_;
+    }
+    return torque_;
+    // lin interp
+}
+
+int16_t torqueMap(uint16_t pedal) {
+    return torqueMap(pedal, FLIP_MOTOR_DIR);
 }

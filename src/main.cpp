@@ -29,6 +29,7 @@ CarStatus car_status = INIT;
 uint16_t status_timestamp = 0;
 uint16_t fault_timestamp = 0;
 uint16_t pedal_out = 0;
+int16_t torque_out = 0;
 bool brake_pressed = false;
 bool pedal_fault = true;
 
@@ -54,8 +55,14 @@ void loop()
     digitalWrite(BRAKE_LIGHT, brake_pressed);
 
     switch (car_status) {
+        default: {
+            // error handling
+            car_status = PROBLEM;
+            // motor.stop();
+        }
+            break;
         case INIT: {
-            // set motor to 0
+            // motor.stop();
             if (digitalRead(START_BTN) == true && brake_pressed) {
                 status_timestamp = ms;
                 car_status = STARTING;
@@ -63,7 +70,7 @@ void loop()
         }
             break;
         case STARTING: {
-            // set motor to 0
+            // motor.stop();
             if (digitalRead(START_BTN) == true && brake_pressed) {
                 if (ms - status_timestamp >= STARTING_DELAY) {
                     // wait till BMS sends thing
@@ -93,17 +100,13 @@ void loop()
                     pedal_fault = true;
                 }
                 else if (ms - fault_timestamp > MIN_FAULT_DURATION) {
-                    // set motor to 0
+                    // motor.stop();
                     car_status = INIT;
+                    break;
                 }
             }
-            // torque = f(pedals)
+            // motor.setTorque(torqueMap(pedal_out));
         }
             break;
-        default: {
-            // error handling
-            car_status = PROBLEM;
-            // brick motor
-        }
     }
 }
