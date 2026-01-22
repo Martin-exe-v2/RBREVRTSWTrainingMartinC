@@ -48,15 +48,4 @@ switch:
 
 
 
-</pseudocode
-
-
-<notes>
-
-Hi software,
-
-I didn't state this too explicitly, but you want to add this line to the end of the ATmega328p environment to grab the library for you.
-
-lib_deps = autowp/autowp-mcp2515@^1.2.1
-
-</notes>
+</pseudocode>

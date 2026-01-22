@@ -3,6 +3,7 @@
 #include "pinMap.h"
 #include "enums.h"
 #include "pedal.h"
+#include "motor.hpp"
 
 // I HATE WRITING MILLIS
 #define ms millis()
@@ -20,16 +21,19 @@ constexpr int MIN_FAULT_DURATION = 100;     // ms, duration for pedal_fault to b
 constexpr uint16_t BRAKE_THRESHOLD = 6942;  // arbritrary units
 
 // CAN setup
-MCP2515 mcp2515_motor(CS_CAN_MOTOR);
-MCP2515 mcp2515_BMS(CS_CAN_BMS);
-MCP2515 mcp2515_debug(CS_CAN_DEBUG);
+MCP2515 motor_can(CS_CAN_MOTOR);
+MCP2515 BMS_can(CS_CAN_BMS);
+MCP2515 debug_can(CS_CAN_DEBUG);
+constexpr int CAN_COUNT = 3;
+MCP2515 MCPS[CAN_COUNT] = {motor_can, BMS_can, debug_can};
+struct can_frame BMS_frame;
 
 // variable setup
 CarStatus car_status = INIT;
-uint16_t status_timestamp = 0;
-uint16_t fault_timestamp = 0;
+uint32_t status_timestamp = 0;
+uint32_t fault_timestamp = 0;
 uint16_t pedal_out = 0;
-int16_t torque_out = 0;
+uint16_t pedal_extra = 0;
 bool brake_pressed = false;
 bool pedal_fault = true;
 
@@ -46,21 +50,22 @@ void setup()
         pinMode(pin_out[i], OUTPUT);
     }
     // init CAN
+    for (int i = 0; i < CAN_COUNT; i++) {
+        MCPS[i].reset();
+        MCPS[i].setBitrate(CAN_500KBPS);
+        MCPS[i].setNormalMode();
+    }
 }
 
 void loop()
 {
+    // motor.update();
+    // debug car status
     // brakes
     brake_pressed = static_cast<uint16_t>(analogRead(BRAKE_IN)) >= BRAKE_THRESHOLD;
     digitalWrite(BRAKE_LIGHT, brake_pressed);
-
+    
     switch (car_status) {
-        default: {
-            // error handling
-            car_status = PROBLEM;
-            // motor.stop();
-        }
-            break;
         case INIT: {
             // motor.stop();
             if (digitalRead(START_BTN) == true && brake_pressed) {
@@ -73,9 +78,16 @@ void loop()
             // motor.stop();
             if (digitalRead(START_BTN) == true && brake_pressed) {
                 if (ms - status_timestamp >= STARTING_DELAY) {
-                    // wait till BMS sends thing
-                    car_status = BUZZING;
-                    status_timestamp = ms;
+                    if (BMS_can.readMessage(&BMS_frame) == MCP2515::ERROR_OK) {
+                        if (BMS_frame.can_id == BMS_COMMAND && BMS_frame.data[6] == 0x50) {
+                            // debug bms ready
+                            car_status = BUZZING;
+                            status_timestamp = ms;
+                        }
+                        else {
+                            // debug bms await
+                        }
+                    }
                 }
             }
             else {
@@ -94,18 +106,30 @@ void loop()
         case DRIVE: {
             digitalWrite(DRIVE_MODE_LED, HIGH);
             pedal_out = analogRead(APPS_5V);
-            if (detectFault(pedal_out, analogRead(APPS_3V3))) {
+            pedal_extra = analogRead(APPS_3V3);
+            if (detectFault(pedal_out, pedal_extra)) { // fault frame for DIFF is sent automatically if detected
                 if (!pedal_fault){
+                    // debug pedal fault rising
                     fault_timestamp = ms;
                     pedal_fault = true;
                 }
                 else if (ms - fault_timestamp > MIN_FAULT_DURATION) {
+                    // debug pedal fault exceed
                     // motor.stop();
                     car_status = INIT;
                     break;
                 }
             }
+            else {
+                // debug pedal fault falling
+            }
             // motor.setTorque(torqueMap(pedal_out));
+        }
+        break;
+        default: {
+            // error handling
+            car_status = PROBLEM;
+            // motor.stop();
         }
             break;
     }

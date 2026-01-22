@@ -2,6 +2,7 @@
 #define PEDAL_H
 
 #include <stdint.h>
+#include "enums.h"
 // settings
 
 constexpr bool FLIP_MOTOR_DIR = false;
