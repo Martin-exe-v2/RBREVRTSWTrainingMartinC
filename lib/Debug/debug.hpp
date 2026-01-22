@@ -16,16 +16,10 @@
 #   define DEBUG_BMS_READY true && DEBUG_BMS
 #   define DEBUG_BMS_AWAIT true && DEBUG_BMS
 #define DEBUG_STATUS true && DEBUG
-#   define DEBUG_STATUS_CATASTROPHIC true && DEBUG_STATUS
+#   define DEBUG_STATUS_FAULT true && DEBUG_STATUS
 #define DEBUG_PEDAL true && DEBUG
 #   define DEBUG_PEDAL_VALUES true && DEBUG_PEDAL
 #   define DEBUG_PEDAL_FAULT true && DEBUG_PEDAL
-
-inline void DBG_TIMESTAMP(uint32_t timestamp_) {
-    #if DEBUG
-        debugCAN::debug_timestamp(timestamp_);
-    #endif
-}
 
 inline void DBG_MOTOR_STOP() {
     #if DEBUG_MOTOR_STOP
@@ -69,13 +63,13 @@ inline void DBG_PEDAL_VALUES(uint16_t pedal1, uint16_t pedal2, uint16_t pedal1_s
     #endif
 }
 
-inline void DBG_PEDAL_FAULT(pedal_fault_status fault_status_) {
+inline void DBG_PEDAL_FAULT(fault_status fault_status_) {
     #if DEBUG_PEDAL_FAULT
         debugCAN::pedal_fault(fault_status_);
     #endif
 }
 
-inline void DBG_PEDAL_FAULT(pedal_fault_status fault_status_, uint16_t dapps) {
+inline void DBG_PEDAL_FAULT(fault_status fault_status_, int32_t dapps) {
     #if DEBUG_PEDAL_FAULT
         debugCAN::pedal_fault(fault_status_, dapps);
     #endif

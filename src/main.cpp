@@ -63,7 +63,6 @@ void setup()
 
 void loop()
 {
-    DBG_TIMESTAMP(ms);
     motor.update();
     DBG_STATUS(car_status);
     // brakes
@@ -135,7 +134,7 @@ void loop()
             // error handling
             motor.stop();
             DBG_STATUS_FAULT();
-            car_status = PROBLEM;
+            car_status = INVALID;
         }
             break;
     }

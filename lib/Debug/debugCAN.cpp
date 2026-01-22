@@ -10,24 +10,6 @@ void debugCAN::init(MCP2515 *can) {
 }
 
 
-void debugCAN::debug_timestamp(uint32_t timestamp_) {
-    if (!can_interface) {
-        return;
-    }
-    
-    struct can_frame txmsg;
-    txmsg.can_id = TIMESTAMP;
-    txmsg.can_dlc = 4;
-
-    txmsg.data[0] = timestamp_ && 0xFF;
-    txmsg.data[1] = (timestamp_ >> 8) && 0xFF;
-    txmsg.data[2] = (timestamp_ >> 16) && 0xFF;
-    txmsg.data[3] = (timestamp_ >> 24) && 0xFF;
-    
-    can_interface -> sendMessage(&txmsg);
-}
-
-
 void debugCAN::motor_stop() {
     if (!can_interface) {
         return;
@@ -111,7 +93,7 @@ void debugCAN::status_car(CarStatus car_status_) {
     txmsg.can_id = CAR_STATE;
     txmsg.can_dlc = 1;
     
-    txmsg.data[0] = car_status_;
+    txmsg.data[0] = car_status_ && 0xFF;
 
     can_interface -> sendMessage(&txmsg);
 }
@@ -123,12 +105,14 @@ void debugCAN::status_fault() {
     
     struct can_frame txmsg;
     txmsg.can_id = FAULT_DATA;
-    txmsg.can_dlc = 0;
+    txmsg.can_dlc = 1;
+
+    txmsg.data[0] = STATUS_INVALID;
 
     can_interface -> sendMessage(&txmsg);
 }
 
-void debugCAN::pedal_fault(pedal_fault_status fault_status_) {
+void debugCAN::pedal_fault(fault_status fault_status_) {
     if (!can_interface) {
         return;
     }
@@ -142,18 +126,20 @@ void debugCAN::pedal_fault(pedal_fault_status fault_status_) {
     can_interface -> sendMessage(&txmsg);
 }
 
-void debugCAN::pedal_fault(pedal_fault_status fault_status_, uint16_t dapps) {
+void debugCAN::pedal_fault(fault_status fault_status_, int32_t dapps) {
     if (!can_interface) {
         return;
     }
     
     struct can_frame txmsg;
     txmsg.can_id = FAULT_DATA;
-    txmsg.can_dlc = 3;
+    txmsg.can_dlc = 5;
     
     txmsg.data[0] = fault_status_;
     txmsg.data[1] = dapps && 0xFF;
     txmsg.data[2] = (dapps >> 8) && 0xFF;
+    txmsg.data[3] = (dapps >> 16) && 0xFF;
+    txmsg.data[4] = (dapps >> 24) && 0xFF;
 
     can_interface -> sendMessage(&txmsg);
 }

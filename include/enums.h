@@ -3,7 +3,7 @@
 
 enum CarStatus
 {
-    PROBLEM = -1, // maximum minimal hamming distance to all other states
+    INVALID = -1, // maximum minimal hamming distance to all other states
     INIT = 0,
     STARTING = 1,
     BUZZING = 2,
@@ -13,8 +13,8 @@ enum CarStatus
 enum MotorCANID
 {
     MOTOR_COMMAND = 0x201,      // MOTOR
-    MOTOR_STOP = 0xD01,        // DEBUG
-    TORQUE_VAL = 0xD02,         // DEBUG
+    MOTOR_STOP = 0x29F,         // DEBUG
+    TORQUE_VAL = 0x290,         // DEBUG
 };
 
 enum BMSCANID
@@ -26,19 +26,19 @@ enum BMSCANID
 
 enum DEBUGCANID
 {
-    TIMESTAMP = 0xD00,          // DEBUG
     PEDAL_VAL = 0xD01,          // DEBUG
     CAR_STATE = 0xD02,          // DEBUG
     FAULT_DATA = 0xBAD,         // DEBUG
 };
 
-enum pedal_fault_status
+enum fault_status
 {
     NONE = 0x00,
     DIFF_DAPPS = 0x10,              //0000
     DIFF_RISING = 0x19,             //1001
     DIFF_EXCEED_DURATION = 0x1A,    //1010
     DIFF_FALLING = 0x1C,            //1100
+    STATUS_INVALID = 0xFF,
 };
 
 #endif // ENUMS_H
