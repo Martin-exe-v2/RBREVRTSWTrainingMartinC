@@ -4,6 +4,7 @@
 #include "enums.h"
 #include "pedal.h"
 #include "motor.hpp"
+#include "debug.hpp"
 
 // I HATE WRITING MILLIS
 #define ms millis()
@@ -37,6 +38,9 @@ uint16_t pedal_extra = 0;
 bool brake_pressed = false;
 bool pedal_fault = true;
 
+// objects
+Motor motor(motor_can);
+
 void setup()
 {
     // pin config
@@ -59,15 +63,16 @@ void setup()
 
 void loop()
 {
-    // motor.update();
-    // debug car status
+    DBG_TIMESTAMP(ms);
+    motor.update();
+    DBG_STATUS(car_status);
     // brakes
     brake_pressed = static_cast<uint16_t>(analogRead(BRAKE_IN)) >= BRAKE_THRESHOLD;
     digitalWrite(BRAKE_LIGHT, brake_pressed);
     
     switch (car_status) {
         case INIT: {
-            // motor.stop();
+            motor.stop();
             if (digitalRead(START_BTN) == true && brake_pressed) {
                 status_timestamp = ms;
                 car_status = STARTING;
@@ -75,17 +80,17 @@ void loop()
         }
             break;
         case STARTING: {
-            // motor.stop();
+            motor.stop();
             if (digitalRead(START_BTN) == true && brake_pressed) {
                 if (ms - status_timestamp >= STARTING_DELAY) {
                     if (BMS_can.readMessage(&BMS_frame) == MCP2515::ERROR_OK) {
                         if (BMS_frame.can_id == BMS_COMMAND && BMS_frame.data[6] == 0x50) {
-                            // debug bms ready
+                            DBG_BMS_READY();
                             car_status = BUZZING;
                             status_timestamp = ms;
                         }
                         else {
-                            // debug bms await
+                            DBG_BMS_AWAIT();
                         }
                     }
                 }
@@ -109,27 +114,28 @@ void loop()
             pedal_extra = analogRead(APPS_3V3);
             if (detectFault(pedal_out, pedal_extra)) { // fault frame for DIFF is sent automatically if detected
                 if (!pedal_fault){
-                    // debug pedal fault rising
+                    DBG_PEDAL_FAULT(DIFF_RISING);
                     fault_timestamp = ms;
                     pedal_fault = true;
                 }
                 else if (ms - fault_timestamp > MIN_FAULT_DURATION) {
-                    // debug pedal fault exceed
-                    // motor.stop();
+                    DBG_PEDAL_FAULT(DIFF_EXCEED_DURATION);
+                    motor.stop();
                     car_status = INIT;
                     break;
                 }
             }
             else {
-                // debug pedal fault falling
+                DBG_PEDAL_FAULT(DIFF_FALLING);
             }
-            // motor.setTorque(torqueMap(pedal_out));
+            motor.setTorque(torqueMap(pedal_out));
         }
         break;
         default: {
             // error handling
+            motor.stop();
+            DBG_STATUS_FAULT();
             car_status = PROBLEM;
-            // motor.stop();
         }
             break;
     }

@@ -26,8 +26,9 @@ enum BMSCANID
 
 enum DEBUGCANID
 {
-    PEDAL_VAL = 0xD00,          // DEBUG
-    CAR_STATE = 0xD01,          // DEBUG
+    TIMESTAMP = 0xD00,          // DEBUG
+    PEDAL_VAL = 0xD01,          // DEBUG
+    CAR_STATE = 0xD02,          // DEBUG
     FAULT_DATA = 0xBAD,         // DEBUG
 };
 

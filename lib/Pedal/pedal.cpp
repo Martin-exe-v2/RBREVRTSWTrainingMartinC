@@ -1,9 +1,10 @@
 #include "pedal.h"
+#include "debug.hpp"
 
 bool detectFault(uint16_t pedal1, uint16_t pedal2) {
     uint16_t pedal1_scaled = pedal1 * pedal2_ratio;
     uint16_t pedal2_scaled = pedal2 * pedal1_ratio;
-    // debug pedal value
+    DBG_PEDAL_VALUES(pedal1, pedal2, pedal1_scaled, pedal2_scaled);
     uint16_t dapps;
     // not int16_t due to maximum values of pedal#_scaled being > 32767, so simple subtraction cast into int16_t has edge cases
     if (pedal1_scaled > pedal2_scaled) { // split is due to the maximum scaled values being > 32767
@@ -15,7 +16,7 @@ bool detectFault(uint16_t pedal1, uint16_t pedal2) {
     if (dapps <= tolerance_threshold) {
         return true;
     }
-    // debug pedal fault dapps
+    DBG_PEDAL_FAULT(DIFF_DAPPS, dapps);
     return false;
 }
 

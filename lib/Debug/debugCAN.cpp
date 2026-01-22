@@ -9,6 +9,25 @@ void debugCAN::init(MCP2515 *can) {
     can_interface = can;
 }
 
+
+void debugCAN::debug_timestamp(uint32_t timestamp_) {
+    if (!can_interface) {
+        return;
+    }
+    
+    struct can_frame txmsg;
+    txmsg.can_id = TIMESTAMP;
+    txmsg.can_dlc = 4;
+
+    txmsg.data[0] = timestamp_ && 0xFF;
+    txmsg.data[1] = (timestamp_ >> 8) && 0xFF;
+    txmsg.data[2] = (timestamp_ >> 16) && 0xFF;
+    txmsg.data[3] = (timestamp_ >> 24) && 0xFF;
+    
+    can_interface -> sendMessage(&txmsg);
+}
+
+
 void debugCAN::motor_stop() {
     if (!can_interface) {
         return;

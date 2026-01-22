@@ -10,6 +10,8 @@ namespace debugCAN
 
     void init(MCP2515 *can_interface);
 
+    void debug_timestamp(uint32_t timestamp_);
+
     void motor_stop();
     void motor_torque(int16_t torque_);
 
