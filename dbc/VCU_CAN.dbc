@@ -32,12 +32,90 @@ NS_ :
     SG_MUL_VAL_
 
 BS_: 
-BU_: 
+BU_: BMS_rx Motor_tx Debug_tx BMS Motor Debug 
+BO_ 408961267 BMS_commad: 0 BMS
+   SG_ BMS_status : 48|8@1+ (1,0) [0|255] "" BMS_rx
+
+BO_ 513 Motor_command: 0 Motor_tx
+   SG_ motor_command_ID : 0|8@1+ (1,0) [0|255] "" Motor
+   SG_ motor_command_value : 8|16@1+ (0.0030517578125,0) [-100|100] "%" Motor
+
+BO_ 656 motor_torque_value: 0 Debug_tx
+   SG_ motor_torque_value : 0|16@1- (0.0030517578125,0) [-100|100] "%" Debug
+
+BO_ 671 motor_stop: 0 Debug_tx
+
+BO_ 2896 BMS_READY: 0 Debug_tx
+
+BO_ 2911 BMS_AWAIT: 0 Debug_tx
+
+BO_ 3330 car_status: 0 Debug_tx
+   SG_ car_status : 0|8@1+ (1,0) [0|3] "" Debug
+
+BO_ 3329 pedal_values: 0 Debug_tx
+   SG_ pedal_5V : 0|16@1+ (0.0048828125,0) [0|5] "V" Debug
+   SG_ pedal_3V3 : 16|16@1+ (0.00322265625,0) [0|3.3] "V" Debug
+   SG_ pedal_5V_scaled : 32|16@1+ (0.00293685756241,0) [0|100] "%" Debug
+   SG_ pedal_3V3_scaled : 48|16@1+ (0.00293685756241,0) [0|100] "%" Debug
+
+BO_ 2989 fault_status: 0 Debug_tx
+   SG_ fault_status_ID : 0|8@1+ (1,0) [0|255] "" Debug
+   SG_ pedal_difference : 8|32@1- (0.00293685756241,0) [-100|100] "%" Debug
+
 BA_DEF_ BO_ "GenMsgBackgroundColor" STRING ;
 BA_DEF_ BO_ "GenMsgForegroundColor" STRING ;
 BA_DEF_ BO_ "matchingcriteria" INT 0 0;
 BA_DEF_ BO_ "filterlabeling" INT 0 0;
+BA_DEF_ BO_ "matchingcriteria" INT 0 0;
+BA_DEF_ BO_ "filterlabeling" INT 0 0;
+BA_DEF_ BO_ "matchingcriteria" INT 0 0;
+BA_DEF_ BO_ "filterlabeling" INT 0 0;
+BA_DEF_ BO_ "matchingcriteria" INT 0 0;
+BA_DEF_ BO_ "filterlabeling" INT 0 0;
+BA_DEF_ BO_ "matchingcriteria" INT 0 0;
+BA_DEF_ BO_ "filterlabeling" INT 0 0;
+BA_DEF_ BO_ "matchingcriteria" INT 0 0;
+BA_DEF_ BO_ "filterlabeling" INT 0 0;
+BA_DEF_ BO_ "matchingcriteria" INT 0 0;
+BA_DEF_ BO_ "filterlabeling" INT 0 0;
+BA_DEF_ BO_ "matchingcriteria" INT 0 0;
+BA_DEF_ BO_ "filterlabeling" INT 0 0;
+BA_DEF_ BO_ "matchingcriteria" INT 0 0;
+BA_DEF_ BO_ "filterlabeling" INT 0 0;
+BA_DEF_ BO_ "matchingcriteria" INT 0 0;
+BA_DEF_ BO_ "filterlabeling" INT 0 0;
+BA_DEF_ BO_ "matchingcriteria" INT 0 0;
+BA_DEF_ BO_ "filterlabeling" INT 0 0;
+BA_DEF_ BO_ "matchingcriteria" INT 0 0;
+BA_DEF_ BO_ "filterlabeling" INT 0 0;
+BA_DEF_ BO_ "matchingcriteria" INT 0 0;
+BA_DEF_ BO_ "filterlabeling" INT 0 0;
+BA_DEF_ BO_ "matchingcriteria" INT 0 0;
+BA_DEF_ BO_ "filterlabeling" INT 0 0;
+BA_DEF_ BO_ "matchingcriteria" INT 0 0;
+BA_DEF_ BO_ "filterlabeling" INT 0 0;
+BA_ "GenMsgBackgroundColor" BO_ 408961267 "#ffff00";
+BA_ "GenMsgForegroundColor" BO_ 513 "#000000";
+BA_ "GenMsgBackgroundColor" BO_ 513 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 656 "#000000";
+BA_ "GenMsgBackgroundColor" BO_ 656 "#aaffff";
+BA_ "GenMsgBackgroundColor" BO_ 671 "#ff557f";
+BA_ "GenMsgBackgroundColor" BO_ 2896 "#ffff7f";
+BA_ "GenMsgForegroundColor" BO_ 2896 "#000000";
+BA_ "GenMsgBackgroundColor" BO_ 2911 "#ff557f";
+BA_ "GenMsgBackgroundColor" BO_ 3330 "#5555ff";
+BA_ "GenMsgForegroundColor" BO_ 3330 "#000000";
+BA_ "GenMsgBackgroundColor" BO_ 3329 "#aaff7f";
+BA_ "GenMsgForegroundColor" BO_ 3329 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 2989 "#000000";
+BA_ "GenMsgBackgroundColor" BO_ 2989 "#ff0000";
 BA_DEF_DEF_ "GenMsgBackgroundColor" "#ffffff";
 BA_DEF_DEF_ "GenMsgForegroundColor" "#000000";
 BA_DEF_DEF_ "matchingcriteria" 0;
-BA_DEF_DEF_ "filterlabeling" 1;
+BA_DEF_DEF_ "filterlabeling" 0;
+BA_DEF_DEF_ "matchingcriteria" 0;
+BA_DEF_DEF_ "filterlabeling" true;
+VAL_ 408961267 BMS_status 80 "Ready";
+VAL_ 513 motor_command_ID 144 "Torque";
+VAL_ 3330 car_status 0 "INIT" 1 "STARTING" 2 "BUZZING" 3 "DRIVE" 255 "INVALID";
+VAL_ 2989 fault_status_ID 0 "OK" 16 "pedal_delta" 25 "pedal_fault_rising" 26 "pedal_fault_exceed_duration" 28 "pedal_fault_falling" 255 "car_status_invalid";
