@@ -4,9 +4,12 @@
 #include "enums.h"
 #include <mcp2515.h>
 
+/**
+ * @brief Namespace for CAN debugging functions
+ */
 namespace debugCAN 
 {
-    extern MCP2515 *can_interface;
+    extern MCP2515 *can_interface; // pointer to the MCP2515 CAN controller instance
 
     void init(MCP2515 *can_interface);
 

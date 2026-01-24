@@ -1,7 +1,20 @@
+/**
+ * @file debugCAN.cpp
+ * @author Martin C
+ * @brief Implementation for debugCAN namespace for CAN debug messages
+ * @version 1.0
+ * @date 2026-01-22
+ * @see debugCAN.hpp
+ */
 #include "debugCAN.hpp"
 
 MCP2515 *can_interface;
 
+/**
+ * @brief Declares the interface debugCAN uses.
+ * Should be called before using any other debugCAN functions.
+ * @param can Pointer to the MCP2515 CAN controller instance for debugging.
+ */
 void debugCAN::init(MCP2515 *can) {
     if (can == nullptr) {
         return;
@@ -9,7 +22,9 @@ void debugCAN::init(MCP2515 *can) {
     can_interface = can;
 }
 
-
+/**
+ * @brief Sends a debug motor stop message over CAN
+ */
 void debugCAN::motor_stop() {
     if (!can_interface) {
         return;
@@ -22,6 +37,10 @@ void debugCAN::motor_stop() {
     can_interface -> sendMessage(&txmsg);
 }
 
+/**
+ * @brief sends a debug torque message over CAN
+ * @param torque_ Torque value sent to motor
+ */
 void debugCAN::motor_torque(int16_t torque_) {
     if (!can_interface) {
         return;
@@ -37,7 +56,9 @@ void debugCAN::motor_torque(int16_t torque_) {
     can_interface -> sendMessage(&txmsg);
 }
 
-
+/**
+ * @brief Sends a debug message to indicate BMS is ready over CAN
+ */
 void debugCAN::bms_ready() {
     if (!can_interface) {
         return;
@@ -50,6 +71,9 @@ void debugCAN::bms_ready() {
     can_interface -> sendMessage(&txmsg);
 }
 
+/**
+ * @brief Sends a debug message indicating program is awaiting BMS ready over CAN
+ */
 void debugCAN::bms_await() {
     if (!can_interface) {
         return;
@@ -62,7 +86,13 @@ void debugCAN::bms_await() {
     can_interface -> sendMessage(&txmsg);
 }
 
-
+/**
+ * @brief Sends debug pedal input message over CAN
+ * @param pedal1 Raw 5V ADC value
+ * @param pedal2 Raw 3.3V ADC value
+ * @param pedal1_scaled Scaled 5V ADC value
+ * @param pedal2_scaled Scaled 3.3V ADC value
+ */
 void debugCAN::pedal_values(uint16_t pedal1, uint16_t pedal2, uint16_t pedal1_scaled, uint16_t pedal2_scaled) {
     if (!can_interface) {
         return;
@@ -84,6 +114,10 @@ void debugCAN::pedal_values(uint16_t pedal1, uint16_t pedal2, uint16_t pedal1_sc
     can_interface -> sendMessage(&txmsg);
 }
 
+/**
+ * @brief Sends a debug message containing the car status over CAN
+ * @param car_status_ current car status at the start of each loop
+ */
 void debugCAN::status_car(CarStatus car_status_) {
     if (!can_interface) {
         return;
@@ -98,6 +132,9 @@ void debugCAN::status_car(CarStatus car_status_) {
     can_interface -> sendMessage(&txmsg);
 }
 
+/**
+ * @brief Sends a debug car status fault message over CAN 
+ */
 void debugCAN::status_fault() {
     if (!can_interface) {
         return;
@@ -112,6 +149,10 @@ void debugCAN::status_fault() {
     can_interface -> sendMessage(&txmsg);
 }
 
+/**
+ * @brief Sends debug pedal fault message over CAN
+ * @param fault_status_ current pedal fault status as defined in fault_status enum
+ */
 void debugCAN::pedal_fault(fault_status fault_status_) {
     if (!can_interface) {
         return;
@@ -126,6 +167,13 @@ void debugCAN::pedal_fault(fault_status fault_status_) {
     can_interface -> sendMessage(&txmsg);
 }
 
+/**
+ * @brief Sends debug pedal fault message over CAN
+ * Intended for usage inside detectFault only
+ * Sends the scaled analog difference between the two pedals as well as status 
+ * @param fault_status_ current pedal fault status as defined in fault_status enum
+ * @param dapps scaled anlog pedal difference
+ */
 void debugCAN::pedal_fault(fault_status fault_status_, int32_t dapps) {
     if (!can_interface) {
         return;

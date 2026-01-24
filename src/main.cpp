@@ -41,6 +41,10 @@ bool pedal_fault = true;
 // objects
 Motor motor(motor_can);
 
+/**
+ * @brief Setup function for initialising the VCU
+ * Initialises MCP2515s and IO pins
+ */
 void setup()
 {
     // pin config
@@ -61,6 +65,10 @@ void setup()
     }
 }
 
+/**
+ * @brief Main program loop
+ * Handles state transitions and main data flow between modules
+ */
 void loop()
 {
     motor.update();
@@ -131,7 +139,7 @@ void loop()
         }
         break;
         default: {
-            // error handling
+            // unreachable, error handling
             motor.stop();
             DBG_STATUS_FAULT();
             car_status = INVALID;

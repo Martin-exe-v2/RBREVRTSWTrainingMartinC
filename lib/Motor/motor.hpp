@@ -4,6 +4,11 @@
 #include "enums.h"
 #include <mcp2515.h>
 
+
+/**
+ * @brief Motor class for managing motor updates
+ * Does not take pedal inputs
+ */
 class Motor
 {
     public:

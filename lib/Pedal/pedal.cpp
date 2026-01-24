@@ -1,6 +1,22 @@
+/**
+ * @file pedal.cpp
+ * @author Martin C
+ * @brief Implementation of pedal related functions
+ * @version 1.618
+ * @date 2026-01-22
+ * @see pedal.h
+ */
 #include "pedal.h"
 #include "debug.hpp"
 
+/**
+ * @brief Checks for fault between 2 pedal readings
+ * Scales both pedals up to a common scale, then calculates a difference
+ * A fault is flagged if the difference in the scaled pedal inputs exceeds the threshold (10%, 3055)
+ * @param pedal1 5V APPS input.
+ * @param pedal2 3.3V APPS input.
+ * @return true if difference exceeds threshold (fault detected), else false
+ */
 bool detectFault(uint16_t pedal1, uint16_t pedal2) {
     uint16_t pedal1_scaled = pedal1 * pedal2_ratio;
     uint16_t pedal2_scaled = pedal2 * pedal1_ratio;
@@ -14,6 +30,12 @@ bool detectFault(uint16_t pedal1, uint16_t pedal2) {
     return false;
 }
 
+/**
+ * @brief Maps pedal ADC value to a torque value.
+ * @param pedal Pedal ADC in range of 0-1023, meant to be the 5V pedal.
+ * @param flip_dir flips motor direction if needed.
+ * @return Mapped torque value as defined by torque_points.
+ */
 constexpr int16_t torqueMap(uint16_t pedal, bool flip_dir) { // note that the output range of flipped direction os -32767 - 0
     int16_t torque_ = 0;
     if (pedal <= torque_points[0].in) { // lower clamp
@@ -39,6 +61,12 @@ constexpr int16_t torqueMap(uint16_t pedal, bool flip_dir) { // note that the ou
     // lin interp
 }
 
+/**
+ * @brief Maps pedal ADC value to a torque value.
+ * Overload that defaults to flip defined by FLIP_MOTOR_DIR
+ * @param pedal Pedal ADC in range of 0-1023, meant to be the 5V pedal.
+ * @return Mapped torque value as defined by torque_points.
+ */
 int16_t torqueMap(uint16_t pedal) {
     return torqueMap(pedal, FLIP_MOTOR_DIR);
 }
