@@ -110,6 +110,7 @@ void loop()
         case BUZZING: {
             digitalWrite(BUZZER_OUT, HIGH);
             if (ms - status_timestamp >= BUZZING_DELAY) {
+                digitalWrite(BUZZER_OUT, LOW);
                 status_timestamp = ms;
                 car_status = DRIVE;
             }
@@ -128,11 +129,13 @@ void loop()
                 else if (ms - fault_timestamp > MIN_FAULT_DURATION) {
                     DBG_PEDAL_FAULT(DIFF_EXCEED_DURATION);
                     motor.stop();
+                    digitalWrite(DRIVE_MODE_LED, LOW);
                     car_status = INIT;
                     break;
                 }
             }
             else {
+                pedal_fault = false;
                 DBG_PEDAL_FAULT(DIFF_FALLING);
             }
             motor.setTorque(torqueMap(pedal_out));
